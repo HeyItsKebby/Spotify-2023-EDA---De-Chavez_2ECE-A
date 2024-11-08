@@ -293,6 +293,9 @@ The majority of songs across all metrics cluster in the lower streaming ranges (
 # Categorizing valence into different levels
 spotify_data['valence_category'] = pd.cut(spotify_data['valence_%'], bins=[0, 25, 50, 75, 100], labels=['Low', 'Medium', 'High', 'Very High'])
 
+# Categorizing energy into different levels
+spotify_data['energy_category'] = pd.cut(spotify_data['energy_%'], bins=[0, 25, 50, 75, 100], labels=['Low', 'Medium', 'High', 'Very High'])
+
 # Creating subplots
 fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 fig.suptitle('Attribute Distributions Comparison')
@@ -383,15 +386,22 @@ Notable Observations:
 ### Code:
 
 ```python
-# Top artists by appearances
+# List of platforms/columns that represent the presence of artists in various playlists and charts
 platforms_list = ['in_spotify_playlists', 'in_spotify_charts', 'in_apple_playlists', 'in_apple_charts', 'in_deezer_playlists', 'in_deezer_charts']
+
+# Ensure the columns are numeric, coerce errors into NaN (useful if they contain non-numeric values)
+spotify_data[platforms_list] = spotify_data[platforms_list].apply(pd.to_numeric, errors='coerce')
+
+# Group by artist(s) and sum the appearances across the platforms
 artist_appearance = spotify_data.groupby("artist(s)_name")[platforms_list].sum().sum(axis=1).sort_values(ascending=False)
 
+# Get the top 10 artists
 top_10_artists = artist_appearance.head(10).reset_index()
 top_10_artists.columns = ['Artist', 'Appearance Count']
 
+# Plot the top 10 artists by appearance count
 plt.figure(figsize=(14, 7))
-sns.barplot(data=top_10_artists, x='Appearance Count', y='Artist', palette="Paired", legend=False)
+sns.barplot(data=top_10_artists, x='Appearance Count', y='Artist', palette="Paired", hue='Artist')  # Explicitly add 'hue'
 plt.title('Top 10 Artists by Playlist/Chart Appearances', fontsize=16, fontweight='bold')
 plt.xlabel('Appearance Count')
 plt.ylabel('Artist')
