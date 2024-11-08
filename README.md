@@ -18,7 +18,7 @@ import seaborn as sns
 ```
 
 #
-This code loads the Spotify dataset from a CSV file and displays its contents in a pandas DataFrame, while ensuring proper handling of encoding issues. The encoding='ISO-8859-1' parameter ensures that non-ASCII characters are properly interpreted.
+This code loads the spotify-2023.csv file and displays its contents in a pandas DataFrame, while ensuring proper handling of encoding issues. The encoding='ISO-8859-1' parameter ensures that non-ASCII characters are properly interpreted.
 ### Code:
 
 ```python
